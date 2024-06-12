@@ -22,3 +22,5 @@ from application.models import *
 
 if __name__ == "__main__":
     app.run()
+
+# some comment

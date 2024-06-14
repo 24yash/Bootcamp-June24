@@ -7,7 +7,15 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True) # 20 here is the character limit on the username attribute
     password = db.Column(db.String(100), nullable=False)
-    # email 
+    # role = db.Column(db.String(100), nullable=False) # normal user - normal. admin user - admin. influencer user - influencer 
+    # # email 
+    # if user.role == 'normal':
+    #     return normal dashboard 
+
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), nullable=False, unique=True) # 20 here is the character limit on the username attribute
+    password = db.Column(db.String(100), nullable=False)
 
 # nullable true means can be empty
 #  nullable false means cannot be empty

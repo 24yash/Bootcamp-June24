@@ -64,4 +64,72 @@ def logout():
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html', username=session['username'])
+    # READ Part
+    blogs = Blog.query.all()
+    # querying for all blogs present in the app
+    return render_template('dashboard.html', username=session['username'], blogs = blogs)
+
+import os
+
+@app.route('/create_blog', methods=['GET', 'POST'])
+def create_blog():
+
+    # we want to know who is the current logged in user
+    user = User.query.filter_by(username = session['username']).first()
+
+    if request.method == 'POST':
+        # get info from form provided by the user about the new blog that the user wants to create.
+        new_title = request.form['title']
+        new_content = request.form['content']
+        image = request.files['image']
+
+        if image: # image may not be provided by the user
+            filename = image.filename
+
+            # user provided image called as lion.png
+            # os will store it as static/images/lion.png
+
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            filename = None
+        
+        if(len(new_title)<1):
+            flash('Title not Provided')
+            return redirect(url_for('create_blog'))
+        
+        # create a new entry in the db. new blog is like an object of Blog class
+        new_blog = Blog(title = new_title, content = new_content, image_url = filename, user_id = user.id)
+
+        db.session.add(new_blog)
+        db.session.commit()
+
+        # change this to specific route for the blog made
+        return redirect(url_for('dashboard'))
+    
+    return render_template('create_blog.html')
+
+@app.route('/blog/<int:id>') # id here is the blog id of the blog that the user wants to read
+def blog(id):
+    particular_blog = Blog.query.get(id) 
+    return render_template('blog.html', blog=particular_blog)
+
+@app.route('/blog/edit/<int:id>', methods=['GET', 'POST'])
+def edit_blog(id):
+    blog = Blog.query.get(id)
+    if request.method == 'POST':
+        # changing existing values to new values provided by the user through the form
+        blog.title = request.form['title']
+        blog.content = request.form['content']
+        db.session.commit()
+        return redirect(url_for('blog', id = blog.id))
+    return render_template('edit_blog.html', blog = blog)
+
+@app.route('/blog/delete/<int:id>', methods=['POST'])
+def delete_blog(id):
+    blog = Blog.query.get(id)
+    db.session.delete(blog)
+    db.session.commit()
+    return redirect(url_for('dashboard'))
+
+
+# CRUD - Create, Read, Update and Delete 

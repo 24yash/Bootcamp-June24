@@ -7,7 +7,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True) # 20 here is the character limit on the username attribute
     password = db.Column(db.String(100), nullable=False)
-    # email 
+    blogs = db.relationship('Blog', backref = 'author')
+    # backref author creates a new attribute author on the Blog Model, which will allow us to access the User object associated with a blog
+    # backref creates a pseudo column
 
 # nullable true means can be empty
 #  nullable false means cannot be empty
@@ -15,7 +17,7 @@ class User(db.Model):
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title_1 = db.Column(db.String(150), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
     content = db.Column(db.String(500), nullable=False)
     image_url = db.Column(db.String(150), nullable=True) # storing path for the image 
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)

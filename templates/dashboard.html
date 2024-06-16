@@ -1,8 +1,34 @@
 {% extends "base.html" %} {% block content %}
 
-<h1>Dashboard Page</h1>
+<div class="container mt-5">
+  <h1>Dashboard Page</h1>
 
-<p>Welcome {{ username }} !!</p>
+  <p>Welcome {{ username }} !!</p>
 
-<a href="{{ url_for('logout') }}">Log Out</a>
+  <a type="button" class="btn btn-success" href="/create_blog"> Create Blog </a>
+
+  <!-- list of blogs available in blogs list -->
+  <!-- for loop over blogs list and display them -->
+
+  {% for blog in blogs %}
+  <div class="card mt-5" style="width: 18rem">
+    {% if blog.image_url %}
+    <img
+      class="card-img-top"
+      src="{{ url_for('static', filename= 'images/' + blog.image_url )}}"
+      alt="This is supposed to be blog image"
+    />
+    {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{{ blog.title }}</h5>
+      <p>{{ blog.id }}</p>
+      <a href="{{url_for('blog', id = blog.id)}}" class="btn btn-primary"
+        >Read Blog</a
+      >
+    </div>
+  </div>
+  {% endfor %}
+
+  <a href="{{ url_for('logout') }}">Log Out</a>
+</div>
 {% endblock %}

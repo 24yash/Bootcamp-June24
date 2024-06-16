@@ -19,6 +19,8 @@ def create_all():
     app.secret_key = 'anythingCanbePuthere'
     # it is used to encrypt the session data before it's stored. 
 
+    app.config['UPLOAD_FOLDER'] = 'static/images'
+
     app.app_context().push()
 
     return app

@@ -111,7 +111,25 @@ def create_blog():
 @app.route('/blog/<int:id>') # id here is the blog id of the blog that the user wants to read
 def blog(id):
     particular_blog = Blog.query.get(id) 
-    return render_template('blog.html', blog=particular_blog)
+    current_user = User.query.filter_by(username=session['username']).first()
+    print(current_user.has_liked(particular_blog))
+    count = (len(particular_blog.likers))
+    return render_template('blog.html', blog=particular_blog, current_user=current_user, count = count)
+
+# like_blog route and unlike_blog route here
+@app.route('/blog/<int:id>/like', methods=['POST'])
+def like_blog(id):
+    blog = Blog.query.get(id)
+    current_user = User.query.filter_by(username=session['username']).first()
+    current_user.like(blog)
+    return redirect(url_for('blog', id=id))
+
+@app.route('/blog/<int:id>/unlike', methods=['POST'])
+def unlike_blog(id):
+    blog = Blog.query.get(id)
+    current_user = User.query.filter_by(username=session['username']).first()
+    current_user.unlike(blog)
+    return redirect(url_for('blog', id=id))
 
 @app.route('/blog/edit/<int:id>', methods=['GET', 'POST'])
 def edit_blog(id):
@@ -131,5 +149,42 @@ def delete_blog(id):
     db.session.commit()
     return redirect(url_for('dashboard'))
 
-
 # CRUD - Create, Read, Update and Delete 
+
+# route for user profile
+@app.route('/user/<username>')
+def user_profile(username):
+    user = User.query.filter_by(username=username).first()
+
+    blogs = Blog.query.filter_by(user_id=user.id).all()
+    number_of_blogs = len(blogs)
+
+    # i will check if this page is being viewed by current logged in user or not and send appropriate data according to that
+    # so this means that follower/following list to be shown only to the user who is viewing their own profiles
+    if session['username']==username:
+        # This is the case when the current user is viewing their own profile
+        return render_template('user_profile.html', user = user, blogs=blogs, number_of_blogs=number_of_blogs, followers=user.followers(), following=user.following(), is_self=True)
+        # is_self is a variable with value true when the current user is viewing their own profile
+    else:
+        # This is the case when the current user is viewing someone else profile
+        current_user = User.query.filter_by(username = session['username']).first()
+        # current_user and user are different. current_user is the logged in user and 'user' is the user whose profile is being viewed
+        is_following = current_user.is_following(user)
+        number_followers = len(user.followers())
+        number_following = len(user.following())
+        return render_template('user_profile.html', user = user, blogs=blogs, number_of_blogs=number_of_blogs, followers=user.followers(), following=user.following(), is_self=False, is_following=is_following, number_followers=number_followers, number_following=number_following)
+
+@app.route('/follow/<username>')
+def follow_route(username):
+    user_to_follow = User.query.filter_by(username=username).first()
+    current_user = User.query.filter_by(username = session['username']).first()
+    current_user.follow(user_to_follow)
+    return redirect(url_for('user_profile', username=username))
+
+
+@app.route('/unfollow/<username>')
+def unfollow_route(username):
+    user_to_unfollow = User.query.filter_by(username=username).first()
+    current_user = User.query.filter_by(username = session['username']).first()
+    current_user.unfollow(user_to_unfollow)
+    return redirect(url_for('user_profile', username=username))

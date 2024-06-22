@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <img
+    src="{{url_for('static', filename='/charts/blog_engagement.png')}}"
+    alt="Analysis"
+  />
+  <h5>Number of Users: {{num}}</h5>
+</div>
+{% endblock %}

@@ -242,4 +242,65 @@ def chart():
     users = User.query.all()
     num = len(users)
 
-    return render_template('charts.html', num=num)
+    from datetime import datetime, timedelta
+
+    now = datetime.utcnow()
+
+    blogs = Blog.query.filter(Blog.timestamp >= now - timedelta(days=4)).all()
+
+    # now -> 22 june 8 pm
+    # now - timedelta(days=4) -> 18 june 8 pm 
+    #  Blog.timestamp >= now - timedelta(days=4) will check if blog.timestamp after 18 june 8 pm 
+
+    import random
+
+    my_list = []
+
+    for blog in blogs:
+        age = (now - blog.timestamp).days
+        value = 0
+        limit = 5
+        if age <= limit:
+            print(blog.title)
+            print(age)
+            print(limit)
+            value = ((age)/limit)*100
+            print(value)
+        
+
+        # if age==0:
+        #     value = '25%'
+        # elif age==1:
+        #     value = '50%'
+        # elif age==2:
+        #     value = '75%'
+        # elif age==3:
+        #     value = '100%'
+        my_list.append((blog.title, value))    
+
+    print(my_list)    
+
+    return render_template('charts.html', num=num, my_list=my_list)
+
+# from datetime import datetime, timedelta
+
+# now = datetime.utcnow()
+
+# blogs = Blog.query.filter(Blog.timestamp >= now - timedelta(days=4)).all()
+
+# # now -> 22 june 8 pm
+# # now - timedelta(days=4) -> 18 june 8 pm 
+# #  Blog.timestamp >= now - timedelta(days=4) will check if blog.timestamp after 18 june 8 pm 
+
+# for blog in blogs:
+#     age = (now - blog.timestamp).days
+#     print(blog.title)
+#     if age==0:
+#         print('25%')
+#     elif age==1:
+#         print('50%')
+#     elif age==2:
+#         print('75%')
+#     elif age==3:
+#         print('100%')
+    

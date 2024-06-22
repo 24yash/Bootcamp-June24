@@ -1,33 +1,8 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container mt-5">
-  <h1>Dashboard Page</h1>
-
-  <p>Welcome {{ username }} !!</p>
-
-  <form action="{{url_for('search')}}" method="post">
-    <input
-      type="search"
-      name="search_query"
-      id=""
-      placeholder="Search for Blog"
-    />
-    <button type="submit" class="btn btn-success">Search</button>
-  </form>
-
-  <form class="mt-3" action="{{url_for('user_search')}}" method="post">
-    <input
-      type="search"
-      name="search_query"
-      id=""
-      placeholder="Search for User"
-    />
-    <button type="submit" class="btn btn-success">Search</button>
-  </form>
-
-  <a type="button" class="btn btn-success mt-3" href="/create_blog">
-    Create Blog
-  </a>
+  <h1>Search Result Page</h1>
+  <a href="{{url_for('dashboard')}}">Dashboard</a>
 
   <!-- list of blogs available in blogs list -->
   <!-- for loop over blogs list and display them -->
@@ -68,7 +43,5 @@
     </ol>
     {% endif %}
   </div>
-
-  <a href="{{ url_for('logout') }}">Log Out</a>
 </div>
 {% endblock %}

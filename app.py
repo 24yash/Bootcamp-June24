@@ -2,6 +2,9 @@
 from flask import Flask
 from application.database import db
 
+from flask_restful import Api
+from application.resources import *
+
 app = None
 
 def create_all():
@@ -22,6 +25,15 @@ def create_all():
     app.config['UPLOAD_FOLDER'] = 'static/images'
 
     app.app_context().push()
+
+    api = Api(app)
+    api.add_resource(HelloWorld, '/api/helloworld')
+
+    api.add_resource(BlogAPI, '/api/blog/<int:id>', '/api/blog')
+
+    api.add_resource(BlogListAPI, '/api/blogs')
+
+    # api object method call here 
 
     return app
 

@@ -1,11 +1,14 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container mt-5">
-  <h1>Dashboard Page</h1>
+  <h1>Welcome {{ username }} !!</h1>
+  <a class="btn btn-danger" href="{{url_for('logout')}}"> LogOut!</a>
 
-  <p>Welcome {{ username }} !!</p>
+  <a class="btn btn-info" href="{{url_for('user_profile', username=username)}}">
+    View Profile</a
+  >
 
-  <form action="{{url_for('search')}}" method="post">
+  <form class="mt-2" action="{{url_for('search')}}" method="post">
     <input
       type="search"
       name="search_query"
@@ -68,7 +71,5 @@
     </ol>
     {% endif %}
   </div>
-
-  <a href="{{ url_for('logout') }}">Log Out</a>
 </div>
 {% endblock %}

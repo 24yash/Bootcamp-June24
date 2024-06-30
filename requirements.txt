@@ -2,3 +2,4 @@ Flask==3.0.3
 Flask-Sqlalchemy==3.1.1
 Pandas==2.2.2
 Matplotlib==3.9.0
+Flask-Restful==0.3.10
